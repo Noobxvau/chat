@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .message {
+            padding: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+        .message-text {
+            font-size: 16px;
+        }
+        .message-timestamp {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body class="h-screen bg-blue-100 flex justify-center items-center p-4">
+    <div class="bg-white p-8 rounded-md shadow-md w-full max-w-sm md:p-12 lg:p-16 xl:p-20">
+        <h1 class="text-2xl font-bold mb-4 text-center text-blue-500">Chat App</h1>
+        <div id="messages" class="mb-4 p-4">
+            <!-- Messages will be displayed here -->
+        </div>
+        <input id="username" type="text" placeholder="Username" class="w-full p-2 mb-2 border border-gray-400 rounded">
+        <input id="message" type="text" placeholder="Type a message" class="w-full p-2 mb-2 border border-gray-400 rounded">
+        <button id="send" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Send</button>
+        <button id="settings" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Settings</button>
+    </div>
+    <!-- Modal for user settings -->
+    <div id="settings-modal" class="hidden fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white p-8 rounded-md shadow-md w-full max-w-sm md:p-12 lg:p-16 xl:p-20">
+            <h1 class="text-2xl font-bold mb-4 text-center text-blue-500">Settings</h1>
+            <input id="new-username" type="text" placeholder="New Username" class="w-full p-2 mb-2 border border-gray-400 rounded">
+            <button id="save-settings" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>
+            <button id="close-settings" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let username = 'Anonymous';
+        let messages = [];
+
+        // Get elements
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+        const settingsButton = document.getElementById('settings');
+        const settingsModal = document.getElementById('settings-modal');
+        const newUsernameInput = document.getElementById('new-username');
+        const saveSettingsButton = document.getElementById('save-settings');
+        const closeSettingsButton = document.getElementById('close-settings');
+        const messagesDiv = document.getElementById('messages');
+
+        // Add event listeners
+        sendButton.addEventListener('click', sendMessage);
+        settingsButton.addEventListener('click', openSettings);
+        saveSettingsButton.addEventListener('click', saveSettings);
+        closeSettingsButton.addEventListener('click', closeSettings);
+
+        // Function to send a message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                const timestamp = new Date().toLocaleTimeString();
+                messages.push({ username, message, timestamp });
+                displayMessages();
+                messageInput.value = '';
+            }
+        }
+
+        // Function to display messages
+        function displayMessages() {
+            messagesDiv.innerHTML = '';
+            messages.forEach((message) => {
+                const messageHtml = `
+                    <div class="message">
+                        <span class="message-text">${message.username}: ${message.message}</span>
+                        <span class="message-timestamp">${message.timestamp}</span>
+                    </div>
+                `;
+                messagesDiv.insertAdjacentHTML('beforeend', messageHtml);
+            });
+        }
+
+        // Function to open settings modal
+        function openSettings() {
+            settingsModal.classList.remove('hidden');
+        }
+
+        // Function to save settings
+        function saveSettings() {
+            const newUsername = newUsernameInput.value.trim();
+            if (newUsername !== '') {
+                username = newUsername;
+                newUsernameInput.value = '';
+                closeSettings();
+            }
+        }
+
+        // Function to close settings modal
+        function closeSettings() {
+            settingsModal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
